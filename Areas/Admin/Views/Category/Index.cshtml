@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Category";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+
+    <!-- Add Button -->
+    <div class="mb-3 text-end">
+        <button class="btn btn-primary" id="btnAddCategory">
+            + Add Category
+        </button>
+    </div>
+
+    <!-- Category List -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Category List</h4>
+        </div>
+        <div class="card-body">
+            <table id="categoryTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>ShowUrl</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="Id" value="0" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Title</label>
+                            <input type="text" id="Title" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Show Url</label>
+                            <input type="text" id="ShowUrl" class="form-control" />
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label>Description</label>
+                            <textarea id="Description" class="form-control"></textarea>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label>Image</label>
+                            <input type="file" id="ImageFile" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-success" id="btnSaveCategory">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // DataTable
+            var table = $('#categoryTable').DataTable({
+                ajax: {
+                    url: '/Category/GetAll',
+                    type: 'GET',
+                    datatype: 'json'
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'title' },
+                    { data: 'showUrl' },
+                    {
+                        data: 'image',
+                        render: function (data) {
+                            return data
+                                ? `<img src="/uploads/${data}" width="50" />`
+                                : '';
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: function (data) {
+                            return `<button class="btn btn-danger btn-sm" onclick="deleteCategory(${data})">Delete</button>`;
+                        }
+                    }
+                ]
+            });
+
+            // Open Modal
+            $('#btnAddCategory').click(function () {
+                $('#categoryForm')[0].reset();
+                $('#Id').val(0);
+                $('#categoryModal').modal('show');
+            });
+
+            // Save Category
+            $('#btnSaveCategory').click(function () {
+                var formData = new FormData();
+                formData.append("subcate", $('#Id').val());
+                formData.append("title", $('#Title').val());
+                formData.append("url", $('#ShowUrl').val());
+                formData.append("description", $('#Description').val());
+                formData.append("ImageFile", $('#ImageFile')[0].files[0]);
+
+                $.ajax({
+                    url: '/Admin/Category/AddCategory',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        $('#categoryModal').modal('hide');
+                        table.ajax.reload();
+                    }
+                });
+            });
+        });
+
+        function deleteCategory(id) {
+            if (!confirm('Are you sure?')) return;
+
+            $.post('/Category/Delete/' + id, function () {
+                $('#categoryTable').DataTable().ajax.reload();
+            });
+        }
+    </script>
+}

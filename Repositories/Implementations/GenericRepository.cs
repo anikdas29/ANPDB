@@ -2,6 +2,7 @@
 using ANPDB.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ANPDB.Repositories.Implementations
 {
@@ -26,13 +27,25 @@ namespace ANPDB.Repositories.Implementations
             => await _dbSet.Where(predicate).ToListAsync();
 
         public async Task AddAsync(T entity)
-           => await _dbSet.AddAsync(entity);
+        {
+            await _dbSet.AddAsync(entity);
+        }
 
-        public void Update(T entity)
-            => _dbSet.Update(entity);
+        public async Task Update(T entity)
+        {
+            _dbSet.Update(entity);
+        }
+        //=> _dbSet.Update(entity);
 
-        public void Remove(T entity)
-            => _dbSet.Remove(entity);
+        public async Task Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+        }
+        //=> _dbSet.Remove(entity);
+
+        //public void Update(T entity) { 
+        //    _dbSet.Update(entity);
+        //}
 
     }
 }
