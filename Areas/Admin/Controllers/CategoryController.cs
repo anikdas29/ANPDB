@@ -19,12 +19,6 @@ namespace ANPDB.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var catrgories = await _unitofwork.Categories.GetAllAsync();
-            var vm = new CategoryViewModel();
-            //{
-            //    Id = 1,
-            //};
-
             return View();
         }
 
@@ -32,9 +26,8 @@ namespace ANPDB.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            //var data = await _unitofwork.Categories.GetAllAsync();
-            //return Json(new { data });
-            return Ok();
+            var catedata = await _categoryservice.GetAllCate();
+            return Ok(new { data = catedata });
         }
 
 

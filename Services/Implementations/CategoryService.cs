@@ -62,12 +62,15 @@ namespace ANPDB.Services.Implementations
         }
 
         public async Task<CategoryViewModel?> GetCateByNameAsync(string title){
+            var getall = await _unitOfWork.Categories.GetAllAsync();
+
             if (string.IsNullOrWhiteSpace(title))
                 return null;
 
-            var category = (await _unitOfWork.Categories.FindAsync(
-                x => x.Title != null && x.Title.Equals(title)
-            )).FirstOrDefault() ?? null;
+            title = title.Trim().ToLower();
+
+            var categoryies = await _unitOfWork.Categories.FindAsync(x => x.Title == title);
+            var category = categoryies.FirstOrDefault();
 
 
             if (category == null)
@@ -85,6 +88,43 @@ namespace ANPDB.Services.Implementations
 
             return vm;
 
+        }
+
+
+        //public async Task<CategoryViewModel?> GetAllCate()
+        //{
+        //    var getall = await _unitOfWork.Categories.GetAllAsync();
+
+        //    getall = getall.ToList();
+
+        //    //var vm = new CategoryViewModel
+        //    //{
+        //    //    Id = getall.,
+        //    //    Title = getall.Title,
+        //    //    ShowUrl = getall.ShowUrl,
+        //    //    SubCategory = getall.SubCategory,
+        //    //    Description = getall.Description,
+        //    //    Image = getall.Image
+        //    //};
+
+        //    return getall;
+
+
+        //}
+
+        public async Task<List<CategoryViewModel>> GetAllCate()
+        {
+            var categories = await _unitOfWork.Categories.GetAllAsync();
+
+            return categories.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Title = c.Title,
+                ShowUrl = c.ShowUrl,
+                SubCategory = c.SubCategory,
+                Description = c.Description,
+                Image = c.Image
+            }).ToList();
         }
     }
 }

@@ -7,6 +7,7 @@ namespace ANPDB.Services.Interfaces
 
         Task<CategoryViewModel?> GetCateByIdAsync(int id);
         Task<CategoryViewModel?> GetCateByNameAsync(string title);
+        Task<List<CategoryViewModel>> GetAllCate();
 
     }
 }
