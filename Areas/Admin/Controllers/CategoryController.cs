@@ -34,32 +34,19 @@ namespace ANPDB.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory(string title, string url, int subcate, string description, IFormFile ImageFile)
         {
-            var dat = _categoryservice.GetCateByNameAsync(title);
-            var model = new CategoryCreateVM
-            {
-                Title = title,
-                Url = url,
-                SubCate = subcate,
-                Description = description,
-                ImageFile = ImageFile
-            };
+            var hasCategory = await _categoryservice.GetCateByNameAsync(title);
+            if (hasCategory == null) {
+                var model = new CategoryCreateVM
+                {
+                    Title = title,
+                    Url = url,
+                    SubCate = subcate,
+                    Description = description,
+                    ImageFile = ImageFile
+                };
 
-            await  _categoryservice.AddCategoryAsync(model);
-            //if (ImageFile != null)
-            //{
-            //    var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
-            //    var path = Path.Combine("wwwroot/uploads", fileName);
-
-            //    using var stream = new FileStream(path, FileMode.Create);
-            //    await ImageFile.CopyToAsync(stream);
-
-            //    category.Image = fileName;
-            //}
-            //var category = new CategoryViewModel 
-
-            //await _unitofwork.Categories.AddAsync(category);
-            //await _unitofwork.SaveAsync();
-
+                await _categoryservice.AddCategoryAsync(model);
+            }
             return Ok();
         }
 

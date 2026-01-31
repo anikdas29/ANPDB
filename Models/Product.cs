@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ANPDB.Models
 {
-    public class Product
+    public class Product : BaseEntity
     {
         [Key]
         public int Id { get; set; }

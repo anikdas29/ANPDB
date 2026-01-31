@@ -62,55 +62,35 @@ namespace ANPDB.Services.Implementations
         }
 
         public async Task<CategoryViewModel?> GetCateByNameAsync(string title){
+            //var getall = await _unitOfWork.Categories.GetAllAsync();
+
+            title = !string.IsNullOrWhiteSpace(title) ? title.Trim().ToLower() : "";
+
+            //Here my findasync didn't worked. so i used getall
             var getall = await _unitOfWork.Categories.GetAllAsync();
+            var catefound = getall.Where(s => s.Title == title).FirstOrDefault();
 
-            if (string.IsNullOrWhiteSpace(title))
-                return null;
+            if (catefound == null) return null;
 
-            title = title.Trim().ToLower();
+            var category = catefound;
 
-            var categoryies = await _unitOfWork.Categories.FindAsync(x => x.Title == title);
-            var category = categoryies.FirstOrDefault();
+            //var categoryies = await _unitOfWork.Categories.FindAsync(x => x.Title == title);
+            //var category = categoryies.FirstOrDefault();
 
 
-            if (category == null)
-                return null;
+            //if (category == null)
+            //    return null;
 
             var vm = new CategoryViewModel
             {
                 Id = category.Id,
-                Title = category.Title,
-                ShowUrl = category.ShowUrl,
-                SubCategory = category.SubCategory,
-                Description = category.Description,
-                Image = category.Image
+                Title = category.Title
             };
 
             return vm;
 
         }
 
-
-        //public async Task<CategoryViewModel?> GetAllCate()
-        //{
-        //    var getall = await _unitOfWork.Categories.GetAllAsync();
-
-        //    getall = getall.ToList();
-
-        //    //var vm = new CategoryViewModel
-        //    //{
-        //    //    Id = getall.,
-        //    //    Title = getall.Title,
-        //    //    ShowUrl = getall.ShowUrl,
-        //    //    SubCategory = getall.SubCategory,
-        //    //    Description = getall.Description,
-        //    //    Image = getall.Image
-        //    //};
-
-        //    return getall;
-
-
-        //}
 
         public async Task<List<CategoryViewModel>> GetAllCate()
         {

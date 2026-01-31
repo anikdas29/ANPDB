@@ -2,11 +2,10 @@
 
 namespace ANPDB.Models
 {
-    public class Banner
+    public class Banner : BaseEntity
     {
         public int Id { get; set; }
 
-        // 🔗 Optional Category relation
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 

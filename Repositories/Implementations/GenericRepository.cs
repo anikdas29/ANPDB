@@ -1,12 +1,14 @@
 ﻿using ANPDB.Data;
+using ANPDB.Models;
 using ANPDB.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ANPDB.Repositories.Implementations
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T>  where T : class
     {
         protected readonly AppDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -28,6 +30,7 @@ namespace ANPDB.Repositories.Implementations
 
         public async Task AddAsync(T entity)
         {
+            var data = entity.ToString();
             await _dbSet.AddAsync(entity);
         }
 
@@ -35,17 +38,11 @@ namespace ANPDB.Repositories.Implementations
         {
             _dbSet.Update(entity);
         }
-        //=> _dbSet.Update(entity);
 
         public async Task Remove(T entity)
         {
             _dbSet.Remove(entity);
         }
-        //=> _dbSet.Remove(entity);
-
-        //public void Update(T entity) { 
-        //    _dbSet.Update(entity);
-        //}
 
     }
 }

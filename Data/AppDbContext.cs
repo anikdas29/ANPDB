@@ -10,6 +10,7 @@ namespace ANPDB.Data
         {
         }
 
+
         public DbSet<Category> Categories { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -40,8 +41,24 @@ namespace ANPDB.Data
                 .IsUnique();
         }
 
-        protected AppDbContext()
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            var now = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.createAt = now;
+                    entry.Entity.updateAt = now;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.updateAt = now;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

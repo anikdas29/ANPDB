@@ -2,7 +2,7 @@
 
 namespace ANPDB.Models
 {
-    public class ProductText
+    public class ProductText : BaseEntity
     {
         [Key]
         public int Id { get; set; }
